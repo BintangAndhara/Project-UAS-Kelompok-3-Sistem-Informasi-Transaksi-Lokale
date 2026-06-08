@@ -1,7 +1,7 @@
 # Sistem Informasi Transaksi Kasir Lokale
 Untuk Memenuhi Tugas Ujian Akhir Semester Pemrograman Berorientasi Objek B<br>
 Program Studi Informatika – Fakultas Teknik – Universitas Tanjungpura<br>
-## Anggota Kelompok 2 :
+## Anggota Kelompok 3 :
 
 Rafli Gustiansyah (D1041241015)<br>
 Bintang Andhara Putra (D1041241051)<br>
