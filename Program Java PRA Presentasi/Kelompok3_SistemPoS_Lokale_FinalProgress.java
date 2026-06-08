@@ -8,9 +8,9 @@ import java.time.format.DateTimeFormatter;
  * Kelompok 3:
  * - Rafli Gustiansyah (D1041241015) 
  * - Bintang Andhara Putra (D1041241051) 
- * - Gwenna Jasmine Farani (D1041241079)     
+ * - Gwenna Jasmine Farani (D1041241079)      
  *
- * Final Progress :  Implementasi Lengkap (4 Pilar OOP, Exception Handling, Varargs, Array 2D, Inner Class)
+ * Final Progress :  Implementasi Lengkap (4 Pilar OOP, Exception Handling, Varargs, Array 2D, Inner Class, Fitur Login)
  */
 
 // [Materi: 4 Pilar OOP - Abstraction] (Class abstract yang tidak bisa diinstansiasi langsung)
@@ -85,17 +85,14 @@ class Member extends EntitasPengguna {
     // [Materi: Tipe data primitif & non primitif] 
     // String adalah non-primitif (object), boolean & int adalah primitif
     private String nomorHp;
-    private boolean statusAktif;
     private int poin;
 
-    public Member(String idMember, String namaMember, String nomorHp, boolean statusAktif) {
+    public Member(String idMember, String namaMember, String nomorHp) {
         super(idMember, namaMember);
         this.nomorHp = nomorHp;
-        this.statusAktif = statusAktif;
         this.poin = 0; 
     }
 
-    public boolean isAktif() { return statusAktif; }
     public String getNomorHp() { return nomorHp; } 
     
     public void tambahPoin(int poinBaru) { 
@@ -173,9 +170,9 @@ class Transaksi {
         }
     }
 
-    public void hitungDiskonMember() {
+    public void hitungDiskon() {
         // [Materi: If else, if else-if, nested if] & [Materi: Operator (Logika)] (Menggunakan && / AND)
-        if (this.member != null && this.member.isAktif()) {
+        if (this.member != null) {
             this.nilaiDiskon = this.subTotal * 0.10;
         } else {
             // Ini adalah contoh Nested If (If di dalam blok else) dan If Else-if
@@ -293,8 +290,8 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
         System.out.println("==========================================\n");
 
         // [Materi: Class dan Object] (Inisialisasi Object Array)
-        Produk[] daftarProduk = new Produk[11];
-        int jumlahProduk = 11; 
+        Produk[] daftarProduk = new Produk[12];
+        int jumlahProduk = 12; 
 
         daftarProduk[0] = new Produk("K001", "Kopi Susu Lokale", 19000);
         daftarProduk[1] = new Produk("K002", "Americano", 20000);
@@ -307,6 +304,7 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
         daftarProduk[8] = new Produk("K009", "Cinnamon Roll", 33000);
         daftarProduk[9] = new Produk("K010", "Mie Kuah Lokale", 22100);
         daftarProduk[10] = new Produk("K011", "Yakiniku Beef", 39000);
+        daftarProduk[11] = new Produk("K012", "Lokale Signature Macchiato", 30000);
         
         Kasir[] daftarKasir = {
             new Kasir("K01", "Bintang Andhara Putra"),
@@ -315,26 +313,71 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
         };
 
         Member[] daftarMember = {
-            new Member("M01", "Muhammad Azizz Trinaldi", "0811223344", true),
-            new Member("M02", "Adjie Prasetya", "0899887766", true),
-            new Member("M03", "Amru Daffa Khoirullah", "0855443322", true)
+            new Member("M01", "Muhammad Azizz Trinaldi", "0811223344"),
+            new Member("M02", "Adjie Prasetya", "0899887766"),
+            new Member("M03", "Amru Daffa Khoirullah", "0855443322")
         };
 
         LaporanPenjualan laporanHariIni = new LaporanPenjualan(20);
+        
         boolean programJalan = true;
         int noTransaksi = 1;
 
+        // Variabel untuk fitur Login
+        boolean isLoggedIn = false;
+        String roleAktif = "";
+
         // [Materi: Loop (While)] (Looping akan terus berjalan selama kondisi bernilai true)
         while (programJalan) {
-            // [Materi: Exception Handling] (Try-catch untuk mengamankan program dari crash/error ketik huruf)
             try {
-                System.out.println("=== MENU KASIR LOKALE ===");
-                System.out.println("1. Lihat Daftar Menu");
-                System.out.println("2. Buat Transaksi Baru");
-                System.out.println("3. Tutup Shift & Cetak Laporan");
-                System.out.print("Pilih menu (1-3): ");
+                // =============== FITUR LOGIN ===============
+                if (!isLoggedIn) {
+                    System.out.println("=== LOGIN SISTEM LOKALE ===");
+                    System.out.print("Username: ");
+                    String inputUsername = input.nextLine();
+                    System.out.print("Password: ");
+                    String inputPassword = input.nextLine();
+
+                    if (inputUsername.equals("kasir") && inputPassword.equals("123")) {
+                        roleAktif = "Kasir";
+                        isLoggedIn = true;
+                        System.out.println("> Login Berhasil! Akses Kasir Diberikan.\n");
+                    } else if (inputUsername.equals("admin") && inputPassword.equals("123")) {
+                        roleAktif = "Admin";
+                        isLoggedIn = true;
+                        System.out.println("> Login Berhasil! Akses Admin Diberikan.\n");
+                    } else {
+                        System.out.println("> Username atau Password salah! Silakan coba lagi.\n");
+                    }
+                    continue; // Skip ke awal perulangan untuk nampilin menu jika berhasil login
+                }
+                // ===========================================
+
+                System.out.println("=== MENU " + roleAktif.toUpperCase() + " LOKALE ===");
+                
+                // Menampilkan menu sesuai role
+                if (roleAktif.equals("Kasir")) {
+                    System.out.println("1. Lihat Daftar Menu");
+                    System.out.println("2. Buat Transaksi Baru");
+                } 
+                if (roleAktif.equals("Admin")) {
+                    System.out.println("3. Tutup Shift & Cetak Laporan");
+                }
+                System.out.println("4. Logout");
+                
+                System.out.print("Pilih menu: ");
                 int pilihanMenu = input.nextInt();
                 input.nextLine(); 
+
+                // Proteksi Hak Akses (Mencegah Kasir akses menu 3, dan Admin akses menu 1 & 2)
+                if (roleAktif.equals("Kasir") && pilihanMenu == 3) {
+                    System.out.println("> [AKSES DITOLAK] Fitur ini khusus Admin.\n");
+                    continue;
+                }
+                if (roleAktif.equals("Admin") && (pilihanMenu == 1 || pilihanMenu == 2)) {
+                    System.out.println("> [AKSES DITOLAK] Fitur ini khusus Kasir.\n");
+                    continue;
+                }
 
                 switch (pilihanMenu) {
                     case 1:
@@ -413,9 +456,22 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
                             }
 
                             if (foundIndex != -1) {
-                                System.out.print("Masukkan Jumlah Qty: ");
-                                int qty = input.nextInt();
-                                input.nextLine();
+                                int qty;
+                                // Perulangan validasi input quantity agar tidak bisa bernilai negatif / nol dan kebal huruf
+                                while (true) {
+                                    try {
+                                        System.out.print("Masukkan Jumlah Qty: ");
+                                        qty = input.nextInt();
+                                        input.nextLine();
+                                        if (qty > 0) {
+                                            break; // Input valid, keluar dari loop validasi
+                                        }
+                                        System.out.println("input tidak valid! silahkan input qty > 0.");
+                                    } catch (Exception e) {
+                                        System.out.println("Input tidak valid! Harap masukkan angka.");
+                                        input.nextLine(); // Membersihkan buffer error agar bisa ngulang input
+                                    }
+                                }
                                 trx.tambahProduk(daftarProduk[foundIndex], qty);
                                 System.out.println("> " + daftarProduk[foundIndex].getNamaProduk() + " ditambahkan!\n");
                             } else {
@@ -428,8 +484,17 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
                             break;
                         }
 
-                        System.out.print("\nApakah pelanggan memiliki member? (Y/N, atau '0' untuk BATAL): ");
-                        String tanyaMember = input.nextLine().toUpperCase();
+                        // === BAGIAN VALIDASI MEMBER YANG BARU DIUPDATE ===
+                        String tanyaMember = "";
+                        while (true) {
+                            System.out.print("\nApakah pelanggan memiliki member? (Y/N, atau '0' untuk BATAL): ");
+                            tanyaMember = input.nextLine().toUpperCase();
+                            
+                            if (tanyaMember.equals("Y") || tanyaMember.equals("N") || tanyaMember.equals("0")) {
+                                break; // Input valid, keluar dari loop
+                            }
+                            System.out.println("> Input tidak valid! Silakan masukkan Y, N, atau 0.");
+                        }
                         
                         if (tanyaMember.equals("0")) {
                             System.out.println("> Transaksi dibatalkan.\n");
@@ -450,9 +515,10 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
                             if (!ditemukan) {
                                 System.out.println("> Member tidak ditemukan. Melanjutkan sebagai pelanggan biasa.");
                             }
-                        } else {
+                        } else if (tanyaMember.equals("N")) {
                             System.out.println("> Melanjutkan sebagai pelanggan biasa.");
                         }
+                        // =================================================
 
                         System.out.print("Pilih Metode Bayar (1.Tunai, 2.QRIS, 3.Debit): ");
                         trx.metodeBayar = input.nextInt();
@@ -460,7 +526,7 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
 
                         // Proses Kalkulasi & Cetak Struk
                         trx.hitungSubtotal();
-                        trx.hitungDiskonMember();
+                        trx.hitungDiskon();
                         trx.hitungPajak();
                         trx.hitungTotalBayar();
                         trx.cetakStruk();
@@ -473,6 +539,12 @@ public class Kelompok3_SistemPoS_Lokale_FinalProgress {
                         System.out.println("\nMenutup Shift Kasir...");
                         laporanHariIni.cetakLaporan();
                         programJalan = false;
+                        break;
+
+                    case 4:
+                        System.out.println("\n> Berhasil Logout dari akun " + roleAktif + ".\n");
+                        isLoggedIn = false;
+                        roleAktif = "";
                         break;
 
                     default:
